@@ -13,9 +13,9 @@ function renderLoading(state) {
     }
 
 }
-function renderInfo(type, info) {
+function renderInfo(type, info, state) {
     const infobox = $('#infobox')
-
+    if (!state) { return infobox.slideUp() }
     infobox.stop().slideUp(() => {
         infobox.html('')
         infobox.append(
@@ -32,6 +32,7 @@ $(function () {
 
     submitButton = $('#submit')
     submitButton.on('click', function () {
+        renderInfo(undefined, undefined, false)
         const groupId = Number.parseInt($('#groupId').val());
         if (!Number.isInteger(groupId)) {
             return renderInfo('alert-danger', 'invalid groupId')
