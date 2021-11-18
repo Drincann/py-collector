@@ -32,42 +32,47 @@ $(function () {
 
     submitButton = $('#submit')
     submitButton.on('click', function () {
-        renderInfo(undefined, undefined, false)
-        const groupId = Number.parseInt($('#groupId').val());
-        if (!Number.isInteger(groupId)) {
-            return renderInfo('alert-danger', 'invalid groupId')
-        }
-
-        let file = null;
+        submitButton.attr('disable', true)
         try {
-            file = $('#codePack')[0].files[0]
-        } catch (error) {
-            return renderInfo('alert-danger', 'no file selected')
-        }
-
-        const form = new FormData()
-        form.append('groupId', groupId)
-        form.append('codePack', file)
-        $.ajax({
-            url: '/upload',
-            type: 'POST',
-            data: form,
-            processData: false,
-            contentType: false,
-            success: function (data) {
-                if (data.code == RESCODE.SUCCESS) {
-                    renderInfo('alert-success', data.data.message)
-                } else {
-                    renderInfo('alert-danger', 'error: ' + data.data.message)
-                }
-                renderLoading(false)
-            },
-            error: function (data) {
-                renderInfo('alert-danger', 'error: ' + data.responseText)
-                renderLoading(false)
+            renderInfo(undefined, undefined, false)
+            const groupId = Number.parseInt($('#groupId').val());
+            if (!Number.isInteger(groupId)) {
+                return renderInfo('alert-danger', 'invalid groupId')
             }
-        })
-        renderLoading(true)
+
+            let file = null;
+            try {
+                file = $('#codePack')[0].files[0]
+            } catch (error) {
+                return renderInfo('alert-danger', 'no file selected')
+            }
+
+            const form = new FormData()
+            form.append('groupId', groupId)
+            form.append('codePack', file)
+            $.ajax({
+                url: '/upload',
+                type: 'POST',
+                data: form,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data.code == RESCODE.SUCCESS) {
+                        renderInfo('alert-success', data.data.message)
+                    } else {
+                        renderInfo('alert-danger', 'error: ' + data.data.message)
+                    }
+                    renderLoading(false)
+                },
+                error: function (data) {
+                    renderInfo('alert-danger', 'error: ' + data.responseText)
+                    renderLoading(false)
+                }
+            })
+            renderLoading(true)
+        } finally {
+            submitButton.attr('disable', false)
+        }
     })
 
 })
