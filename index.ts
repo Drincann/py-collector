@@ -11,16 +11,19 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.post('/upload', multer({ limits: { fileSize: 1024 * 1024 * 50 } }).single('codePack',), async (req, res) => {
     try {
-        if (req.body?.groupId == undefined) {
+        if (req.body?.groupId?.trim?.() === '') {
             return res.json(responseData(RESCODE.PARAM_ERROR, { message: 'groupId is required' }))
         }
 
-        if (req.file == undefined) {
+        if (!req.file) {
             return res.json(responseData(RESCODE.PARAM_ERROR, { message: 'file is required' }))
         }
 
         const { originalname, buffer } = req.file
-        const groupId = req.body.groupId
+        const groupId = Number.parseInt(req.body.groupId)
+        if (!Number.isInteger(groupId)) {
+            return res.json(responseData(RESCODE.PARAM_ERROR, { message: 'groupId is not integer' }))
+        }
 
         const fileExt = path.extname(originalname)
         if (!(fileExt in allowedFileExt)) {
