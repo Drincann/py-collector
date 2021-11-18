@@ -15,7 +15,6 @@ function renderLoading(state) {
 }
 function renderInfo(type, info, state) {
     const infobox = $('#infobox')
-    if (!state) { return infobox.slideUp() }
     infobox.stop().slideUp(() => {
         infobox.html('')
         infobox.append(
@@ -28,13 +27,18 @@ function renderInfo(type, info, state) {
         infobox.slideDown()
     })
 }
+
+function renderHiddenInfo() {
+    const infobox = $('#infobox')
+    infobox.slideUp()
+}
 $(function () {
 
     submitButton = $('#submit')
     submitButton.on('click', function () {
-        submitButton.attr('disable', true)
+        submitButton.attr('disabled', true)
         try {
-            renderInfo(undefined, undefined, false)
+            renderHiddenInfo(undefined, undefined, false)
             const groupId = Number.parseInt($('#groupId').val());
             if (!Number.isInteger(groupId)) {
                 return renderInfo('alert-danger', 'invalid groupId')
@@ -71,7 +75,7 @@ $(function () {
             })
             renderLoading(true)
         } finally {
-            submitButton.attr('disable', false)
+            submitButton.attr('disabled', false)
         }
     })
 
