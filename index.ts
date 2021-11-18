@@ -9,7 +9,7 @@ const app = express()
 
 app.use(express.static(path.join(__dirname, 'public')))
 
-app.post('/upload', multer().single('codePack'), async (req, res) => {
+app.post('/upload', multer({ limits: { fileSize: 1024 * 1024 * 50 } }).single('codePack',), async (req, res) => {
     try {
         if (req.body?.groupId == undefined) {
             return res.json(responseData(RESCODE.PARAM_ERROR, { message: 'groupId is required' }))
