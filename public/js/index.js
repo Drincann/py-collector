@@ -32,9 +32,21 @@ $(function () {
 
     submitButton = $('#submit')
     submitButton.on('click', function () {
+        const groupId = Number.parseInt($('#groupId').val());
+        if (!Number.isInteger(groupId)) {
+            return renderInfo('alert-danger', 'invalid groupId')
+        }
+
+        let file = null;
+        try {
+            file = $('#codePack')[0].files[0]
+        } catch (error) {
+            return renderInfo('alert-danger', 'no file selected')
+        }
+
         const form = new FormData()
-        form.append('groupId', $('#groupId').val())
-        form.append('codePack', $('#codePack')[0].files[0])
+        form.append('groupId', groupId)
+        form.append('codePack', file)
         $.ajax({
             url: '/upload',
             type: 'POST',
@@ -47,6 +59,10 @@ $(function () {
                 } else {
                     renderInfo('alert-danger', 'error: ' + data.data.message)
                 }
+                renderLoading(false)
+            },
+            error: function (data) {
+                renderInfo('alert-danger', 'error: ' + data.responseText)
                 renderLoading(false)
             }
         })
