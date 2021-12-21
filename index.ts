@@ -22,10 +22,7 @@ app.get('/info', async (req, res) => {
 
     for (const item of dirents) {
         const stat = await fs.stat(path.join(uploads, item.name))
-        // 时间取当天凌晨
         const date = new Date(stat.birthtime)
-        date.setHours(0, 0, 0, 0)
-        // 转换为 年/月/日
         const dateStr = date.toISOString().slice(0, 10)
         if (!time2files[dateStr]) {
             time2files[dateStr] = []
