@@ -15,12 +15,12 @@ function renderLoading(state) {
 }
 
 function renderFileList(fileLists) {
-    function getListHtml(listinfo) {
+    function getListHtml(listinfo, display) {
         return `
         <div class="row mt-5">
             <div class="col-12">
-                <ul class="list-group">
-                    ${getTimeHtml(listinfo.time)}
+            ${getTimeHtml(listinfo.time)}
+                <ul class="list-group" style="${display ? '' : 'display:none;'}">
                     ${listinfo.files.reduce((acc, fileinfo) => acc += getFileHtml(fileinfo), '')}
                 </ul>
             </div>
@@ -30,15 +30,17 @@ function renderFileList(fileLists) {
         return `<li class="list-group-item"><a href="${fileinfo.url}">${fileinfo.name}</a></li>`
     }
     function getTimeHtml(timeStr) {
-        return `<li class="list-group-item active" aria-current="true">${timeStr}</li>`
+        return `<li class="list-group-item active groupHead" aria-current="true" style="cursor: pointer;">${timeStr}</li>`
     }
 
     const fileListsBox = $('#fileLists')
     fileListsBox.html('')
     for (const fileList of fileLists) {
-        fileListsBox.append(
-            getListHtml(fileList)
-        )
+        if (fileLists.indexOf(fileList) === 0) {
+            fileListsBox.append(getListHtml(fileList, true))
+        } else {
+            fileListsBox.append(getListHtml(fileList))
+        }
     }
 }
 
@@ -62,3 +64,7 @@ function renderFileList(fileLists) {
         }
     })
 })();
+
+$('#fileLists').on('click', '.groupHead', function (e) {
+    $(this).next().slideToggle()
+})
