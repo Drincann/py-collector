@@ -32,6 +32,9 @@ app.get('/info', async (req, res) => {
     for (const time in time2files) {
         resData.items?.push({ time, files: time2files[time] })
     }
+    resData.items?.sort((a, b) => {
+        return new Date(b.time).getTime() - new Date(a.time).getTime()
+    });
     res.send(responseData(RESCODE.SUCCESS, resData))
 })
 app.post('/upload', multer({ limits: { fileSize: 1024 * 1024 * 50 } }).single('codePack',), async (req, res) => {
